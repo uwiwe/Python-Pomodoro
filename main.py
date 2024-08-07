@@ -8,14 +8,14 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+WORK_MIN = 0.1 # 25
+SHORT_BREAK_MIN = 0.15 # 5
+LONG_BREAK_MIN = 0.2 # 20
 reps = 0
 checkmark = ""
 timer = None
 status = "Start"
-count_left = 1500
+count_left = 1
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
@@ -26,7 +26,7 @@ def reset_timer():
     start_button.config(text=status)
     window.after_cancel(timer)
     canvas.itemconfig(timer_text, text="00:00")
-    title_label.config(text="Timer")
+    title_label.config(text="Timer", fg=GREEN)
     checkmarks.config(text="")
     reps = 0
 
@@ -50,13 +50,16 @@ def start_timer():
         elif reps % 2 == 0:
             count_down(short_break_sec)
             title_label.config(text="Break", fg=PINK)
-        status = "Stop"
-    elif status == "Stop":
+    elif status == "Pause":
         window.after_cancel(timer)
         status = "Resume"
     elif status == "Resume":
-        count_down(count_left)
-        status = "Stop"
+        if count_left > 0:
+            count_down(count_left)
+            status = "Pause"
+        else:
+            status = "Start"
+
     start_button.config(text=status)
 
 

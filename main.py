@@ -15,7 +15,7 @@ reps = 0
 checkmark = ""
 timer = None
 status = "Start"
-count_left = 1
+count_left = 0
 
 # ---------------------------- TIMER RESET ------------------------------- #
 
@@ -35,12 +35,13 @@ def reset_timer():
 
 
 def start_timer():
-    global reps, status, timer
+    global reps, status, timer, count_left
     work_sec = WORK_MIN * 60
     short_break_sec = SHORT_BREAK_MIN * 60
     long_break_sec = LONG_BREAK_MIN * 60
     reps += 1
     if status == "Start":
+        status = "Pause"
         if reps % 2 != 0:
             count_down(work_sec)
             title_label.config(text="Work", fg=GREEN)
@@ -51,12 +52,12 @@ def start_timer():
             count_down(short_break_sec)
             title_label.config(text="Break", fg=PINK)
     elif status == "Pause":
-        window.after_cancel(timer)
         status = "Resume"
+        window.after_cancel(timer)
     elif status == "Resume":
-        if count_left > 0:
-            count_down(count_left)
+        if count_left > 1:
             status = "Pause"
+            count_down(count_left)
         else:
             status = "Start"
 
